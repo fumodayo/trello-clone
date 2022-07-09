@@ -1,6 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@200;400;600;800&display=swap");
 
 $gap: 10px;
+
+// Height: appbar + boardbar + boardcontent = 91vh, 1vh for scrollbar
+$navbar-app-height: 5vh;
+$navbar-board-height: 6vh;
+$board-content-height: 88vh;
+
 $column-header-height: 46px;
 $column-footer-height: 46px;
 $column-border-radius: 5px;
@@ -12,7 +18,7 @@ $appbar-bg-color: #005f95;
 $list-bg-color: #ebecf0;
 $common-element-bg: rgba(255, 255, 255, 0.24);
 
-// Screen
+// screen
 $screen-lg: 1201px;
 $screen-md: 992px;
 $screen-sm: 768px;
