@@ -9,7 +9,7 @@ $column-height: calc(#{$board-content-height} - #{$gap * 2});
   margin-left: $gap;
 
   > * {
-    background-color: $list-bg-color;
+    background-color: $column-bg-color;
     padding: 0 8px;
   }
 
@@ -33,9 +33,9 @@ $column-height: calc(#{$board-content-height} - #{$gap * 2});
     color: #888;
 
     .footer-actions {
-      margin-left: $gap;
+      margin-left: 5px;
       cursor: pointer;
-      &:hover{
+      &:hover {
         color: #333;
       }
     }
@@ -54,8 +54,8 @@ $column-height: calc(#{$board-content-height} - #{$gap * 2});
       width: 11px;
     }
     &::-webkit-scrollbar-thumb {
-      background-color: darken($list-bg-color, 15);
-      border-right: 5px solid $list-bg-color;
+      background-color: darken($column-bg-color, 15);
+      border-right: 5px solid $column-bg-color;
     }
 
     .card-ghost {
