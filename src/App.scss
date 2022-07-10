@@ -39,10 +39,23 @@ body {
   [contenteditable].form-control:focus {
     box-shadow: none;
   }
-  
+
   .btn:focus,
   .btn:active {
-    outline: none;
-    box-shadow: none;
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  .trello-content-editable {
+    // Inheriting background color (column)
+    background-color: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    border: none;
+    cursor: pointer;
+    &:focus {
+      background-color: #fff;
+      border: 1px solid $input-border-color;
+    }
   }
 }
