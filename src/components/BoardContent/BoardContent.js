@@ -28,6 +28,7 @@ const BoardContent = () => {
 
   const newColumnInputRef = useRef(null);
 
+  // get data in initialData
   useEffect(() => {
     const boardFromDB = initialData.boards.find(
       (board) => board.id === "board-1"
@@ -40,6 +41,7 @@ const BoardContent = () => {
     }
   }, []);
 
+  // handle ref in input (focus, select)
   useEffect(() => {
     if (newColumnInputRef && newColumnInputRef.current) {
       newColumnInputRef.current.focus();
@@ -51,6 +53,7 @@ const BoardContent = () => {
     return <div className="not-found">Board not found</div>;
   }
 
+  // handle drop/drag column by react-smooth-dnd
   const onColumnDrop = (dropResult) => {
     let newColumns = [...columns];
     newColumns = applyDrag(newColumns, dropResult);
@@ -63,7 +66,7 @@ const BoardContent = () => {
     setBoard(newBoard);
   };
 
-  // component con -> component cha
+  // component children (Column) -> component parent (BoardContent)
   const onCardDrop = (columnId, dropResult) => {
     if (dropResult.removedIndex !== null || dropResult.addedIndex !== null) {
       let newColumns = [...columns];
@@ -76,10 +79,12 @@ const BoardContent = () => {
     }
   };
 
+  // handle open add new column (true -> show edit input)
   const toggleOpenNewColumnForm = () => {
     setOpenNewColumnForm(!openNewColumnForm);
   };
 
+  // handle add new column
   const addNewColumn = () => {
     if (!newColumnTitle) {
       newColumnInputRef.current.focus();

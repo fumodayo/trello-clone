@@ -1,4 +1,6 @@
-
+// item have addedIndex and removedIndex
+// if col 1 - index 1 move col 2 - index 3
+// remove col 1 - index 1 && add col 2 - index 3
 
 export const applyDrag = (arr, dragResult) => {
   const { removedIndex, addedIndex, payload } = dragResult;
