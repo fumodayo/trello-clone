@@ -9,9 +9,9 @@ import {
 } from "react-bootstrap";
 import Column from "components/Column/Column";
 import { isEmpty } from "lodash";
-import { initialData } from "actions/initialData";
 import { mapOrder } from "utilities/sorts";
 import { applyDrag } from "utilities/dragDrop";
+import { fetchBoardDetails } from "actions/ApiCall";
 
 import "./BoardContent.scss";
 
@@ -29,17 +29,12 @@ const BoardContent = () => {
 
   const newColumnInputRef = useRef(null);
 
-  // get data in initialData
   useEffect(() => {
-    const boardFromDB = initialData.boards.find(
-      (board) => board.id === "board-1"
-    );
-
-    if (boardFromDB) {
-      setBoard(boardFromDB);
-
-      setColumns(mapOrder(boardFromDB.columns, boardFromDB.columnOrder, "id"));
-    }
+    const boardId = "62d4b8505a37af07f08a18c8";
+    fetchBoardDetails(boardId).then((board) => {
+      setBoard(board);
+      setColumns(mapOrder(board.columns, board.columnOrder, "_id"));
+    });
   }, []);
 
   // handle ref in input (focus, select)
@@ -60,7 +55,7 @@ const BoardContent = () => {
     newColumns = applyDrag(newColumns, dropResult);
 
     let newBoard = { ...board };
-    newBoard.columnOrder = newColumns.map((c) => c.id);
+    newBoard.columnOrder = newColumns.map((c) => c._id);
     newBoard.columns = newColumns;
 
     setColumns(newColumns);
@@ -72,9 +67,9 @@ const BoardContent = () => {
     if (dropResult.removedIndex !== null || dropResult.addedIndex !== null) {
       let newColumns = [...columns];
 
-      let currentColumn = newColumns.find((c) => c.id === columnId);
+      let currentColumn = newColumns.find((c) => c._id === columnId);
       currentColumn.cards = applyDrag(currentColumn.cards, dropResult);
-      currentColumn.cardOrder = currentColumn.cards.map((i) => i.id);
+      currentColumn.cardOrder = currentColumn.cards.map((i) => i._id);
 
       setColumns(newColumns);
     }
@@ -89,7 +84,7 @@ const BoardContent = () => {
 
     const newColumnToAdd = {
       id: Math.random().toString(36).substring(2, 3), // 5 random characters, will remove we implement code api
-      boardId: board.id,
+      boardId: board._id,
       title: newColumnTitle.trim(),
       cardOrder: [],
       cards: [],
@@ -99,7 +94,7 @@ const BoardContent = () => {
     newColumns.push(newColumnToAdd);
 
     let newBoard = { ...board };
-    newBoard.columnOrder = newColumns.map((c) => c.id);
+    newBoard.columnOrder = newColumns.map((c) => c._id);
     newBoard.columns = newColumns;
 
     setColumns(newColumns);
@@ -109,11 +104,11 @@ const BoardContent = () => {
   };
 
   const onUpdateColumn = (newColumnToUpdate) => {
-    const columnIdToUpdate = newColumnToUpdate.id;
+    const columnIdToUpdate = newColumnToUpdate._id;
 
     let newColumns = [...columns];
     const columnIndexToUpdate = newColumns.findIndex(
-      (i) => i.id === columnIdToUpdate
+      (i) => i._id === columnIdToUpdate
     );
 
     if (newColumnToUpdate._destroy) {
@@ -126,7 +121,7 @@ const BoardContent = () => {
     }
 
     let newBoard = { ...board };
-    newBoard.columnOrder = newColumns.map((c) => c.id);
+    newBoard.columnOrder = newColumns.map((c) => c._id);
     newBoard.columns = newColumns;
 
     setColumns(newColumns);

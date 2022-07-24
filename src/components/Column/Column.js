@@ -14,7 +14,7 @@ import {
 
 const Column = (props) => {
   const { column, onCardDrop, onUpdateColumn } = props;
-  const cards = mapOrder(column.cards, column.cardOrder, "id");
+  const cards = mapOrder(column.cards, column.cardOrder, "_id");
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const toggleShowConfirmModal = () => setShowConfirmModal(!showConfirmModal);
@@ -76,7 +76,7 @@ const Column = (props) => {
     const newCardToAdd = {
       id: Math.random().toString(36).substring(2, 3), // 5 random characters
       boardId: column.boardId,
-      columnId: column.id,
+      columnId: column._id,
       title: newCardTitle.trim(),
       cover: null,
     };
@@ -84,7 +84,7 @@ const Column = (props) => {
     // clone new column does not affect column
     let newColumn = cloneDeep(column);
     newColumn.cards.push(newCardToAdd);
-    newColumn.cardOrder.push(newCardToAdd.id);
+    newColumn.cardOrder.push(newCardToAdd._id);
 
     onUpdateColumn(newColumn);
     setNewCardTitle("");
@@ -131,7 +131,7 @@ const Column = (props) => {
         <Container
           orientation="vertical"
           groupName="col" // chung group name keo sang cac column khac
-          onDrop={(dropResult) => onCardDrop(column.id, dropResult)}
+          onDrop={(dropResult) => onCardDrop(column._id, dropResult)}
           getChildPayload={(index) => cards[index]}
           dragClass="card-ghost"
           dropClass="card-ghost-drop"
