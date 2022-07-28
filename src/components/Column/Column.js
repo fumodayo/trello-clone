@@ -11,9 +11,10 @@ import {
   saveContentAfterPressEnter,
   selectAllInLineText,
 } from "utilities/contentEditable";
+import { createNewCard, updateColumn } from "actions/ApiCall";
 
 const Column = (props) => {
-  const { column, onCardDrop, onUpdateColumn } = props;
+  const { column, onCardDrop, onUpdateColumnState } = props;
   const cards = mapOrder(column.cards, column.cardOrder, "_id");
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -45,26 +46,37 @@ const Column = (props) => {
     }
   }, [openNewCardForm]);
 
+  // Remove column
   const onConfirmModalAction = (type) => {
     if (type === MODAL_ACTION_CONFIRM) {
       const newColumn = {
         ...column,
         _destroy: true,
       };
-
-      onUpdateColumn(newColumn);
+      // Call API update column
+      updateColumn(newColumn._id, newColumn).then((updatedColumn) => {
+        onUpdateColumnState(updatedColumn);
+      });
     }
 
     toggleShowConfirmModal();
   };
 
+  // Update column title
   const handleColumnTitleBlur = () => {
-    const newColumn = {
-      ...column,
-      title: columnTitle,
-    };
+    // Duplicate title, no need to call API again
+    if (columnTitle !== column.title) {
+      const newColumn = {
+        ...column,
+        title: columnTitle,
+      };
 
-    onUpdateColumn(newColumn);
+      // Call API update column
+      updateColumn(newColumn._id, newColumn).then((updatedColumn) => {
+        updatedColumn.cards = newColumn.cards;
+        onUpdateColumnState(updatedColumn);
+      });
+    }
   };
 
   const addNewCard = () => {
@@ -74,21 +86,22 @@ const Column = (props) => {
     }
 
     const newCardToAdd = {
-      id: Math.random().toString(36).substring(2, 3), // 5 random characters
       boardId: column.boardId,
       columnId: column._id,
       title: newCardTitle.trim(),
-      cover: null,
     };
 
-    // clone new column does not affect column
-    let newColumn = cloneDeep(column);
-    newColumn.cards.push(newCardToAdd);
-    newColumn.cardOrder.push(newCardToAdd._id);
+    // Call API
+    createNewCard(newCardToAdd).then((card) => {
+      // clone new column does not affect column
+      let newColumn = cloneDeep(column);
+      newColumn.cards.push(card);
+      newColumn.cardOrder.push(card._id);
 
-    onUpdateColumn(newColumn);
-    setNewCardTitle("");
-    toggleOpenNewCardForm();
+      onUpdateColumnState(newColumn);
+      setNewCardTitle("");
+      toggleOpenNewCardForm();
+    });
   };
 
   return (
@@ -117,7 +130,9 @@ const Column = (props) => {
             />
 
             <Dropdown.Menu>
-              <Dropdown.Item onClick={toggleOpenNewCardForm}>Add card...</Dropdown.Item>
+              <Dropdown.Item onClick={toggleOpenNewCardForm}>
+                Add card...
+              </Dropdown.Item>
               <Dropdown.Item onClick={toggleShowConfirmModal}>
                 Remove column...
               </Dropdown.Item>
